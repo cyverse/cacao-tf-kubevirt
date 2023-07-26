@@ -1,0 +1,48 @@
+---
+
+- name: SET_FACT; set python interpreter
+  set_fact: ansible_python_interpreter="/usr/bin/python3"
+
+- name: PIP ; install kubernetes with pip for the manifests
+  ansible.builtin.pip:
+    name: kubernetes
+    executable: pip3
+
+- name: FILE; ensure manifests directory exists
+  file:
+    path: "{{ MANIFESTS_DIR }}"
+    state: directory
+    owner: "{{ CACAO_USER }}"
+    group: "{{ CACAO_USER }}"
+    mode: "0755"
+  become: true
+
+- name: GET_URL; grab the manifests
+  get_url:
+    url: "{{ item.src }}"
+    dest: "{{ item.dest }}"
+  loop: "{{ MANIFESTS }}"
+
+# TODO: add an option for software emulation fallback: https://github.com/kubevirt/kubevirt/blob/main/docs/software-emulation.md
+#       this would require modifying the manifest before applying
+
+- name: K8S ; apply templated manifests
+  kubernetes.core.k8s:
+    state: present
+    src: "{{ item.dest }}"
+    kubeconfig: "{{ KUBE_CONFIG_FILE }}"
+  loop: "{{ MANIFESTS }}"
+
+- name: GET_URL; grab virtctl
+  get_url:
+    url: "{{ VIRTCTL_URL }}"
+    dest: "{{ VIRTCTL_WHICH }}"
+  become: true
+
+- name: FILE; make virtctl executable
+  file:
+    path: "{{ VIRTCTL_WHICH }}"
+    owner: "{{ CACAO_USER }}"
+    group: "{{ CACAO_USER }}"
+    mode: '0775'
+  become: true

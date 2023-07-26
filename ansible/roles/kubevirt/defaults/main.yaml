@@ -1,0 +1,9 @@
+KUBEVIRT_VERSION: v1.0.0
+KUBE_CONFIG_FILE: /etc/rancher/k3s/k3s.yaml
+MANIFESTS_DIR: /opt/manifests
+MANIFESTS:
+  - { src: "https://github.com/kubevirt/kubevirt/releases/download/{{ KUBEVIRT_VERSION }}/kubevirt-operator.yaml", dest: "{{ MANIFESTS_DIR }}/kubevirt-operator.yaml" }
+  - { src: "https://github.com/kubevirt/kubevirt/releases/download/{{ KUBEVIRT_VERSION }}/kubevirt-cr.yaml", dest: "{{ MANIFESTS_DIR }}/kubevirt-cr.yaml" }
+VIRTCTL_WHICH: /usr/bin/virtctl
+VIRTCTL_VERSION: v0.41.0
+VIRTCTL_URL: https://github.com/kubevirt/kubevirt/releases/download/{{ VIRTCTL_VERSION }}/virtctl-{{ VIRTCTL_VERSION }}-linux-amd64
