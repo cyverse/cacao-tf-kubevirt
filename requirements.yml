@@ -1,0 +1,13 @@
+
+---
+collections:
+ - kubernetes.core
+ - ansible.posix
+ - community.kubernetes
+ - cloud.common
+
+#ansible-galaxy collection install kubernetes.core
+#ansible-galaxy collection install ansible.posix
+roles:
+  - src: cyverse-ansible.ansible_k3s
+  - src: CyVerse-Ansible.docker
